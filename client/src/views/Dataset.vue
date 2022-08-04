@@ -608,7 +608,7 @@ export default {
         ...this.query,
         annotated: this.queryAnnotated,
         category_ids__in: encodeURI(this.selected.categories),
-        un_selected_category_ids__in: encodeURI(tags),
+        un_selected_category_ids__in: encodeURI(this.unselected.categories),
         order: this.order
       })
         .then(response => {

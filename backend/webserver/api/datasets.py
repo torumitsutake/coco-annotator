@@ -447,7 +447,7 @@ class DatasetDataId(Resource):
                     logger.info(query['un_selected_category_ids__in'])
                     # Only show annotated images with selected category_ids
                     query_dict = {}
-                    query_dict['category_ids__in'] = query['un_selected_category_ids__in']
+                    query_dict['category_ids__nin'] = query['un_selected_category_ids__in']
                     query_build &= Q(**query_dict)
                 # Only show non-annotated images
                 else:
@@ -466,10 +466,9 @@ class DatasetDataId(Resource):
             query_build &= (Q(**query_dict_1) | Q(**query_dict_2))
 
         elif 'un_selected_category_ids__in' in query.keys():
-            logger.info(query['un_selected_category_ids__in'])
             # Show annotated images with selected category_ids or non-annotated images
             query_dict_1 = {}
-            query_dict_1['category_ids__in'] = query['un_selected_category_ids__in']
+            query_dict_1['category_ids__nin'] = query['un_selected_category_ids__in']
 
             query_dict_2 = {}
             query_dict_2['annotated'] = False
@@ -502,7 +501,6 @@ class DatasetDataId(Resource):
 
         categories = CategoryModel.objects(
             id__in=dataset.categories).only('id', 'name')
-
         return {
             "total": total,
             "per_page": per_page,
