@@ -311,6 +311,22 @@
             ></TagsInput>
           </div>
       </div>
+        <div
+          class="sidebar-section"
+          style="max-height: 30%; color: lightgray"
+        >
+          <div class="form-group">
+            <label>Not Show Annotated Categories </label>
+            <TagsInput
+              v-model="unselected.categories"
+              element-id="unselectedCategories"
+              title="Only shows images annotated with the selected categories for 'Show Annotated' button. Leave empty to show all annotated images."
+              :existing-tags="categoryTags"
+              :typeahead="true"
+              :typeahead-activation-threshold="0"
+            ></TagsInput>
+          </div>
+      </div>
     </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="generateDataset">
@@ -539,6 +555,9 @@ export default {
       selected: {
         categories: []
       },
+      unselected: {
+        categories: []
+      },
       datasetExports: [],
       tab: "images",
       order: "file_name",
@@ -571,6 +590,16 @@ export default {
     updatePage(page) {
       let process = "Loading images from dataset";
       this.addProcess(process);
+      
+      let tags = [];
+      this.categories.forEach(c => tags[tags.length] = c.id);
+
+      this.unselected.categories.forEach(unselect_category => {
+        let index = tags.indexOf(Number(unselect_category));
+        if (index > -1) {
+          tags.splice(index, 1);
+        }
+      });
 
       Dataset.getData(this.dataset.id, {
         page: page,
@@ -579,6 +608,7 @@ export default {
         ...this.query,
         annotated: this.queryAnnotated,
         category_ids__in: encodeURI(this.selected.categories),
+        un_selected_category_ids__in: encodeURI(tags),
         order: this.order
       })
         .then(response => {
@@ -779,6 +809,9 @@ export default {
       this.updatePage();
     },
     "selected.categories"(val) {
+      this.updatePage();
+    },
+    "unselected.categories"(val) {
       this.updatePage();
     },
     folders() {

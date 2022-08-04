@@ -35,7 +35,7 @@ services:
       - "./datasets:/datasets"
       - "./models:/models"
     environment:
-      - FILE_WATCHER=true
+      # - FILE_WATCHER=true
       - FLASK_APP=webserver
       - FLASK_ENV=development
       - DEBUG=true

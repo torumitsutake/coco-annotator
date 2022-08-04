@@ -16,7 +16,7 @@ services:
       - "5000:5000"
     environment:
       - SECRET_KEY=RandomSecretKeyHere
-      - FILE_WATCHER=true
+      #- FILE_WATCHER=true
     volumes:
       - "./datasets:/datasets"
       - "./models:/models"
@@ -25,6 +25,7 @@ services:
       - workers
     networks:
       - cocoannotator
+    platform: linux/x86_64
   workers:
     container_name: annotator_workers
     image: jsbroks/coco-annotator:workers-stable
@@ -35,6 +36,7 @@ services:
       - database
     networks:
       - cocoannotator
+    platform: linux/x86_64
   messageq:
     image: rabbitmq:3
     container_name: annotator_message_q
